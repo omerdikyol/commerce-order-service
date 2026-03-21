@@ -18,4 +18,7 @@ public class JwtProperties {
 
     @Min(60000)
     private long accessTokenExpirationMs;
+
+    @Min(300000)
+    private long refreshTokenExpirationMs;
 }

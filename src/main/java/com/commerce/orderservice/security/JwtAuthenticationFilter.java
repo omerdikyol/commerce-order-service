@@ -35,9 +35,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         String username;
+        String tokenType;
         try {
             username = jwtService.extractUsername(token);
+            tokenType = jwtService.extractTokenType(token);
         } catch (RuntimeException ex) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (!"access".equals(tokenType)) {
             filterChain.doFilter(request, response);
             return;
         }

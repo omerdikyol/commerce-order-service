@@ -14,3 +14,4 @@ spring:
 jwt:
   secret: test-secret-key-that-is-at-least-32-bytes
   access-token-expiration-ms: 3600000
+  refresh-token-expiration-ms: 604800000
