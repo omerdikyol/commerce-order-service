@@ -7,6 +7,7 @@ import lombok.Builder;
 @Builder
 public record ApiErrorResponse(
         Instant timestamp,
+        String requestId,
         int status,
         String error,
         String message,

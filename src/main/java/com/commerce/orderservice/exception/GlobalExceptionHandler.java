@@ -3,6 +3,7 @@ package com.commerce.orderservice.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.List;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -73,6 +74,7 @@ public class GlobalExceptionHandler {
     ) {
         ApiErrorResponse response = ApiErrorResponse.builder()
                 .timestamp(Instant.now())
+                .requestId(MDC.get("requestId"))
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .message(message)
