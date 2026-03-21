@@ -1,0 +1,13 @@
+target/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*.log
+
+# local environment files
+.env
+.env.*
+
+# ignore project specification draft
+SPEC.md
