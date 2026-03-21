@@ -113,6 +113,16 @@ class SecurityAuthorizationIntegrationTest {
         verify(orderService).getUserOrderById(eq(55L), eq(99L));
     }
 
+    @Test
+    void swaggerAndOpenApiEndpointsArePublic() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.openapi").exists());
+
+        mockMvc.perform(get("/swagger-ui/index.html"))
+                .andExpect(status().isOk());
+    }
+
     private Authentication authenticationFor(Long userId, String username, Role role) {
         User user = User.builder()
                 .id(userId)
