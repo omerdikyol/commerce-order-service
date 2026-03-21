@@ -23,5 +23,5 @@ server:
   port: ${SERVER_PORT:8080}
 
 jwt:
-  secret: ${JWT_SECRET:change-me-with-strong-secret}
+  secret: ${JWT_SECRET:change-me-with-strong-secret-change-me}
   access-token-expiration-ms: ${JWT_ACCESS_TOKEN_EXPIRATION_MS:3600000}
