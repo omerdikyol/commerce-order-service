@@ -3,10 +3,10 @@ package com.commerce.orderservice.service;
 import com.commerce.orderservice.dto.product.ProductRequest;
 import com.commerce.orderservice.dto.product.ProductResponse;
 import com.commerce.orderservice.entity.Product;
+import com.commerce.orderservice.exception.ResourceNotFoundException;
 import com.commerce.orderservice.mapper.ProductMapper;
 import com.commerce.orderservice.repository.ProductRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ public class ProductService {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         ProductMapper.updateEntity(product, request);
         return ProductMapper.toResponse(productRepository.save(product));
     }

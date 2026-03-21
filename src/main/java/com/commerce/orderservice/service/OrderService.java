@@ -8,6 +8,8 @@ import com.commerce.orderservice.entity.OrderItem;
 import com.commerce.orderservice.entity.Product;
 import com.commerce.orderservice.entity.User;
 import com.commerce.orderservice.entity.enums.OrderStatus;
+import com.commerce.orderservice.exception.InsufficientStockException;
+import com.commerce.orderservice.exception.ResourceNotFoundException;
 import com.commerce.orderservice.mapper.OrderMapper;
 import com.commerce.orderservice.repository.OrderRepository;
 import com.commerce.orderservice.repository.ProductRepository;
@@ -16,7 +18,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrder(Long userId, OrderCreateRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         Order order = Order.builder()
                 .user(user)
@@ -45,13 +46,13 @@ public class OrderService {
 
         for (OrderItemRequest itemRequest : request.getItems()) {
             Product product = productRepository.findById(itemRequest.getProductId())
-                    .orElseThrow(() -> new NoSuchElementException(
+                    .orElseThrow(() -> new ResourceNotFoundException(
                             "Product not found with id: " + itemRequest.getProductId()
                     ));
 
             int requestedQuantity = itemRequest.getQuantity();
             if (product.getStockQuantity() < requestedQuantity) {
-                throw new IllegalStateException("Insufficient stock for product id: " + product.getId());
+                throw new InsufficientStockException("Insufficient stock for product id: " + product.getId());
             }
 
             product.setStockQuantity(product.getStockQuantity() - requestedQuantity);
@@ -86,7 +87,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponse getUserOrderById(Long userId, Long orderId) {
         Order order = orderRepository.findByIdAndUserId(orderId, userId)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Order not found for user with order id: " + orderId
                 ));
         return OrderMapper.toResponse(order);

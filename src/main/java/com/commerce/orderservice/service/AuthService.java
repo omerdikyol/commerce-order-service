@@ -5,6 +5,7 @@ import com.commerce.orderservice.dto.auth.LoginRequest;
 import com.commerce.orderservice.dto.auth.RegisterRequest;
 import com.commerce.orderservice.entity.User;
 import com.commerce.orderservice.entity.enums.Role;
+import com.commerce.orderservice.exception.ConflictException;
 import com.commerce.orderservice.repository.UserRepository;
 import com.commerce.orderservice.security.SecurityUserPrincipal;
 import com.commerce.orderservice.security.JwtService;
@@ -26,10 +27,10 @@ public class AuthService {
 
     public void register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new ConflictException("Username already exists");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new ConflictException("Email already exists");
         }
 
         User user = User.builder()
