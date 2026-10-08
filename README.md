@@ -1,6 +1,6 @@
 # Commerce Order Service
 
-RESTful API for an e-commerce order management system built with Java 21 and Spring Boot 3.
+A Java 21 / Spring Boot 3 API for placing orders, managing products, and keeping each user’s order history separate. Order lines preserve the purchase price, stock changes occur inside a transaction, and authentication uses access and rotating refresh tokens.
 
 ## Tech Stack
 
@@ -20,7 +20,7 @@ RESTful API for an e-commerce order management system built with Java 21 and Spr
 
 ## Architecture
 
-The project follows a strict layered structure:
+HTTP handling, domain behavior, and persistence are separated into:
 
 - `controller`
 - `service`
@@ -147,6 +147,14 @@ Flyway migrations are in:
 
 - `src/main/resources/db/migration/V1__init_schema.sql`
 - `src/main/resources/db/migration/V2__add_refresh_tokens.sql`
+
+## Reading the implementation
+
+- [OrderService](src/main/java/com/commerce/orderservice/service/OrderService.java) calculates totals and deducts stock.
+- [AuthService](src/main/java/com/commerce/orderservice/service/AuthService.java) handles registration and refresh-token rotation.
+- [Security authorization tests](src/test/java/com/commerce/orderservice/integration/SecurityAuthorizationIntegrationTest.java) exercise access boundaries.
+
+Transaction rollback is covered separately from concurrent inventory access. Simultaneous orders for the last item require additional verification; transaction boundaries alone do not establish that guarantee.
 
 ## Testing
 
